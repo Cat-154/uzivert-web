@@ -773,6 +773,8 @@ app.get('/api/admin/verificados', adminOnly, async (req, res) => res.json(await 
 
 // ---------- LISTA PUBLICA DE SCRIPTS ----------
 const baseUrl = (req) => (env.PUBLIC_URL || `${String(req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim()}://${req.headers.host}`).replace(/\/$/, '');
+// Membresias (aditivo; apagado salvo MEMBRESIAS=1)
+try { require('./membresias')(app, { adminOnly, audit, baseUrl, env, ROBLOX_USERS }); } catch (e) { console.error('[membresias] no se cargo:', e.message); }
 // Estado de UN script por su ruta o slug (lo consultan los loaders cada 10 s para cerrar el script si pasa a mantenimiento).
 app.get('/api/estado-ruta', async (req, res) => {
   noStore(res);
@@ -1470,7 +1472,7 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 if (fs.existsSync(path.join(PUBLIC_DIR, 'index.html'))) {
   app.use(express.static(PUBLIC_DIR));
 } else {
-  const PAGINA = new Set(['index.html', 'admin.html', 'style.css', 'app.js', 'admin.js', 'common.js', 'logo.png']);
+  const PAGINA = new Set(['index.html', 'admin.html', 'style.css', 'app.js', 'admin.js', 'admin-membresias.js', 'common.js', 'logo.png']);
   const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.png': 'image/png' };
   console.log('[aviso] No hay carpeta public/: sirviendo los archivos de la página desde la raiz.');
   app.use((req, res, next) => {
