@@ -241,7 +241,7 @@ SOBRE UZIVERT HUB (esto lo sabes con seguridad):
   2) Los hubs APARTE: Duelos Murderer vs Sheriffs y el script Universal. Tampoco necesitan verificación.
   La verificación es OPCIONAL para todos: sirve para que al ejecutar el script te salga un cartel de bienvenida y tener tu perfil y el rol de Verificado. Nunca digas que hay que verificarse para usar un script. Sí hay baneos para quien abuse, y al ejecutar se registra el usuario de Roblox por seguridad.
 - Para qué sirven: ayudan a jugar, tanto a jugadores nuevos como antiguos. No son para abusar. Ningún script está garantizado: se intenta que todos funcionen siempre, pero a veces fallan o necesitan actualización. Nunca prometas que funcionan siempre, ni digas que son seguros o indetectables.
-- Hay un servidor de Discord oficial, un bot (Vertix también vive ahí), una API y esta página web (uzivert-web.onrender.com).
+- Hay un servidor de Discord oficial, un bot (Vertix también vive ahí), una API y esta página web (uzivert-hub.onrender.com).
 - La página tiene: Inicio, Verificar, Scripts, Foro, Updates, Estado del servicio, Preguntas frecuentes, Soporte, Donaciones (próximamente), Creador, Créditos y Términos.
 
 VERIFICACIÓN (reglas fijas): nunca pidas ni aceptes contraseña, PIN, correo ni cookies de nadie; solo el usuario de Roblox. Si alguien no quiere poner el código en su perfil, dile con amabilidad que sin ese paso no se puede verificar. Se hace en la sección Verificar de la página: se verifica la cuenta de Roblox poniendo un código en la descripción del perfil. Si alguien no sabe cómo, explícaselo simple y con calma, y usa action {"type":"go","page":"verificar"}. No inventes pasos que no conozcas.
@@ -427,12 +427,12 @@ function vxVerif(t, dc, ctx) {
   if (/\b(por que|porque|para que|que es|que significa|sirve|funciona|seguro|riesgo|explica|explicame|diferencia|cuanto|cuando|donde)\b/.test(q)) return null;   // preguntas de fondo las responde la IA
   if (!/\b(como|quiero|ayuda|ayudame|empezar|empiezo|iniciar|inicio|hacer|hago|paso|pasos|puedo|necesito|me verifico|verificarme|verificarse|verifico mi|verificar mi|verificar mi cuenta)\b/.test(q)) return null;
   const pasos = 'Para verificarte solo necesitas tu usuario de Roblox. ' + NADA + '\n1. Escribe tu usuario.\n2. Te doy un código de 5 palabras.\n3. Pégalo en la descripción de tu perfil de Roblox y guarda.\n4. Toca verificar. El código vale 15 minutos.';
-  if (dc) return { say: pasos + '\nLa verificación se hace en la página: https://uzivert-web.onrender.com (sección Verificar).', action: null };
+  if (dc) return { say: pasos + '\nLa verificación se hace en la página: https://uzivert-hub.onrender.com (sección Verificar).', action: null };
   return { say: pasos, action: { type: 'verify' } };
 }
 
 // Loaders que Vertix entrega (fijos, sin buscar nada). Se pueden cambiar con variables de entorno.
-const VX_BASE = (env.PUBLIC_URL || 'https://uzivert-web.onrender.com').replace(/\/$/, '');
+const VX_BASE = (env.PUBLIC_URL || 'https://uzivert-hub.onrender.com').replace(/\/$/, '');
 const VX_LOADERS = {
   hub: env.VX_LOADER_HUB || `loadstring(game:HttpGet("${VX_BASE}/Api/UzivertHub/Auth2"))()`,
   duelos: env.VX_LOADER_DUELOS || `loadstring(game:HttpGet("${VX_BASE}/Api/Duelos/auth2/UzivertHub"))()`,
