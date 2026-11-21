@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><link rel="icon" type="image/png" href="/logo.png"><link rel="apple-touch-icon" href="/logo.png"><meta name="theme-color" content="#0b0714"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Admin | Uzivert Hub</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"><link rel="stylesheet" href="/style.css"></head>
+<body>
+<canvas id="stars"></canvas>
+<header><div class="brand"><div class="orb"></div>UZIVERT ADMIN</div><nav><a href="/">Ver sitio</a><a id="out" class="hide">Salir</a></nav></header>
+<main style="max-width:920px">
+  <section id="login" class="card" style="max-width:420px;margin:40px auto">
+    <h3>Acceso privado</h3><label for="key">Clave de administrador</label><input id="key" type="password" autocomplete="current-password">
+    <div class="row"><button id="go">Entrar</button></div><div class="msg" id="lm"></div>
+  </section>
+  <section id="panel" class="hide">
+    <div class="tabs" id="tabs"><button data-t="resumen">Resumen</button><button data-t="scripts">Scripts</button><button data-t="soporte">Soporte</button><button data-t="boveda">Bóveda</button><button data-t="consola">Consola</button><button data-t="seguridad">Seguridad</button><button data-t="updates">Updates</button><button data-t="sistema">Sistema</button></div>
+    <div class="tab hide" data-t="resumen">
+      <div class="stats" id="rs-stats"></div>
+      <div class="card"><h3>Ejecuciones de los últimos 14 días</h3><p>Cada vez que un ejecutor carga un loader de la página cuenta una ejecución.</p><div class="bars" id="rs-bars"></div></div>
+      <div class="card"><h3>Por script</h3><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>SCRIPT</th><th>TOTAL</th><th>HOY</th><th>7 DÍAS</th><th>ÚLTIMA</th></tr></thead><tbody id="rs-rows"></tbody></table></div><p id="rs-nota" style="margin-top:10px">Solo cuentan los loaders que salen de esta página (/s/nombre). Los loaders de Vercel y GitHub no pasan por aquí.</p></div>
+    </div>
+    <div class="tab hide" data-t="boveda">
+      <div class="card"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><h3>Bóveda de scripts</h3><span style="display:flex;gap:8px"><button id="bv-newl">Nuevo loader</button><button class="ghost" id="bv-news">Nuevo script</button></span></div>
+        <p id="bv-info" style="margin:4px 0 10px">Aquí guardas tus scripts completos. Son privados: nunca se sirven públicamente.</p>
+        <select id="bv-fil"><option value="">Todas las carpetas</option></select>
+        <div class="sv-lista" id="bv-lista"></div></div>
+      <div class="card hide" id="bv-ed"><h3 id="bv-t">Nuevo archivo</h3>
+        <label for="bv-tp">Tipo</label><select id="bv-tp"><option value="loader">Loader (el que pegan los usuarios)</option><option value="script">Script (el que ejecuta el loader)</option></select>
+        <div class="two"><div><label for="bv-n">Nombre</label><input id="bv-n" maxlength="80" placeholder="Ej: Duelos completo v2.5"></div><div><label for="bv-c">Carpeta</label><input id="bv-c" maxlength="40" list="bv-dl" placeholder="Ej: Duelos"><datalist id="bv-dl"></datalist></div></div>
+        <label for="bv-no">Notas</label><input id="bv-no" maxlength="500" placeholder="Qué es o qué cambió">
+        <label for="bv-code">Script completo</label><textarea class="code-ed" id="bv-code" spellcheck="false"></textarea>
+        <label for="bv-file">O subir un archivo .lua / .txt</label><input id="bv-file" type="file" accept=".lua,.txt,text/plain">
+        <div id="bv-pub"><label for="bv-slug">Loader de la página (como GitHub, pero con tu loader)</label>
+          <input id="bv-slug" maxlength="40" placeholder="nombre-del-loader (ej: duelos-prueba)" autocapitalize="off">
+          <label for="bv-alias" style="margin-top:8px">Ruta personalizada (opcional, así se ve el link)</label>
+          <input id="bv-alias" maxlength="200" placeholder="api/duelos/auth/UzivertHub" autocapitalize="off">
+          <div class="row" style="margin-top:8px"><button class="ghost" id="bv-pubbtn" type="button">Publicar loader</button><button class="ghost hide" id="bv-unpub" type="button">Despublicar</button></div>
+          <pre class="ls hide" id="bv-loader" style="margin-top:8px;white-space:pre-wrap;word-break:break-all"></pre>
+          <div class="row hide" id="bv-loaderrow" style="margin-top:6px"><button class="ghost" id="bv-lcopy" type="button">Copiar loader</button></div>
+          <p style="margin-top:6px">Solo se abre con el loader desde Roblox. No sale en la lista pública. Cada vez que guardas aquí, el loader se actualiza solo.</p></div>
+        <div id="bv-vers" class="hide"><label for="bv-vsel">Versiones anteriores</label><select id="bv-vsel"></select></div>
+        <div class="row"><button id="bv-save">Guardar</button><button class="ghost" id="bv-dl-btn">Descargar</button><button class="ghost" id="bv-copy">Copiar</button><button class="danger" id="bv-del">Borrar</button><button class="ghost" id="bv-x">Cerrar</button></div>
+        <div class="msg" id="bv-m"></div></div>
+    </div>
+    <div class="tab hide" data-t="consola">
+      <div class="card"><h3>Consola</h3><p>Registro del servidor en vivo y comandos. Las claves y webhooks se ocultan.</p>
+        <div class="row" style="margin:10px 0"><input id="co-fil" placeholder="Filtrar..." style="flex:1;min-width:120px"><button class="ghost" id="co-pause">Pausar</button><button class="ghost" id="co-clear">Limpiar</button></div>
+        <div class="term" id="co-term"></div>
+        <form class="sv-form" id="co-form" autocomplete="off" style="margin-top:8px"><input id="co-in" placeholder="Escribe un comando (ayuda)" autocapitalize="off" autocomplete="off" spellcheck="false"><button type="submit">Ejecutar</button></form>
+        <div class="chips" id="co-chips"><button class="ghost" data-c="ayuda">ayuda</button><button class="ghost" data-c="estado">estado</button><button class="ghost" data-c="ejecuciones">ejecuciones</button><button class="ghost" data-c="ips">ips</button><button class="ghost" data-c="soporte">soporte</button></div></div>
+    </div>
+    <div class="tab hide" data-t="seguridad">
+      <div class="card"><h3>IPs bloqueadas</h3><p>Se bloquean solas cuando alguien insiste en abrir un loader fuera de Roblox. El bloqueo afecta a los loaders de la página.</p>
+        <div class="sv-lista" id="se-ips"></div>
+        <div class="row"><input id="se-ip" placeholder="IP a bloquear" style="flex:1;min-width:140px"><input id="se-h" type="number" min="1" max="720" value="24" style="width:90px"><button id="se-add">Bloquear</button></div><div class="msg" id="se-m"></div></div>
+      <div class="card"><h3>Avisos en vivo</h3><p>Manda un mensaje en pantalla a quienes ejecutan por el link seguro <code>/x/</code>. Llega en unos 15 segundos. Con "expulsar" los saca de la sesión.</p>
+        <div class="row"><input id="av-para" placeholder="todos o UserId de Roblox" value="todos" style="flex:1;min-width:140px"></div>
+        <div class="row"><input id="av-txt" maxlength="180" placeholder="Mensaje (máx. 180)" style="flex:1;min-width:180px"></div>
+        <div class="row"><label style="display:flex;gap:8px;align-items:center"><input id="av-kick" type="checkbox"> Expulsar de la sesión</label><button id="av-send">Enviar</button></div><div class="msg" id="av-m"></div></div>
+      <div class="card"><h3>Entrega segura <small id="sx-modo"></small></h3><p>Últimos pasos y rechazos de <code>/x/</code>, con el motivo. Si un ejecutor real aparece rechazado, avísame.</p><pre class="ls" id="sx-log" style="max-height:300px;overflow:auto;margin-top:10px"></pre></div>
+      <div class="card"><h3>Actividad del panel</h3><p>Quién hizo qué (últimas acciones).</p><pre class="ls" id="se-aud" style="max-height:340px;overflow:auto;margin-top:10px"></pre></div>
+    </div>
+<div class="tab hide" data-t="scripts">
+    <div class="card"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><h3>Mis scripts</h3><button id="new">Nuevo script</button></div>
+      <p id="stor" style="margin:4px 0 10px"></p>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>NOMBRE</th><th>JUEGO</th><th>VERSIÓN</th><th>ESTADO</th><th></th></tr></thead><tbody id="rows"></tbody></table></div>
+      <p id="empty" class="hide" style="margin-top:12px">Todavía no subiste ningún script.</p>
+    </div>
+    <div class="card hide" id="ed">
+      <h3 id="ed-t">Nuevo script</h3>
+      <label for="e-name">Nombre</label><input id="e-name" maxlength="60" placeholder="Ej: MM2 Hub">
+      <label for="e-code">Loader (pega aquí tu loadstring o tu script)</label><textarea class="code-ed" id="e-code" spellcheck="false" placeholder='loadstring(game:HttpGet("https://..."))()'></textarea>
+      <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--sub);font-size:14px">Opciones (no son necesarias)</summary>
+        <div class="two"><div><label for="e-slug">Nombre del link (se crea solo)</label><input id="e-slug" maxlength="40" placeholder="mm2-hub"></div><div><label for="e-ver">Versión</label><input id="e-ver" maxlength="20" placeholder="v1.0"></div></div>
+        <div class="two"><div><label for="e-game">Juego</label><input id="e-game" maxlength="60"></div><div><label for="e-desc">Descripción</label><input id="e-desc" maxlength="300"></div></div>
+        <div class="two"><div><label for="e-logo">Logo del juego (link https o ID del juego)</label><input id="e-logo" maxlength="300" placeholder="Ej: 142823291 o https://..."></div><div><label for="e-verif">¿Necesita verificación?</label><select id="e-verif"><option value="si">Sí, solo verificados</option><option value="no">No, cualquiera puede copiarlo</option></select></div></div>
+        <label for="e-sit">Estado del script (se ve en la página Estado)</label><select id="e-sit"><option value="ok">Funcionando</option><option value="mant">En mantenimiento</option><option value="caido">No funciona</option></select>
+        <label for="e-cartel">Cartel de mantenimiento en el juego</label><select id="e-cartel"><option value="grande">Grande (loader oficial, 5 juegos)</option><option value="costado">Chico al costado (Duelos / Universal)</option></select>
+        <label for="e-estado">Estado</label><select id="e-estado"><option value="activo">Activo (disponible por link)</option><option value="enlace">Solo con enlace (no sale en la lista de la página)</option><option value="oculto">Oculto (el link da 404)</option></select>
+        <label for="e-file">O subir un archivo .lua / .txt</label><input id="e-file" type="file" accept=".lua,.txt,text/plain">
+      </details>
+      <div id="e-link" class="hide"><label>Loadstring</label><pre class="ls" id="e-ls"></pre><div class="row" style="margin-top:8px"><button class="ghost" id="e-copy">Copiar loadstring</button></div></div>
+      <div class="row"><button id="e-save">Guardar</button><button class="ghost" id="e-cancel">Cerrar</button></div><div class="msg" id="em"></div>
+    </div>
+</div>
+<div class="tab hide" data-t="soporte">
+    <div class="card"><h3>Soporte en vivo</h3>
+      <p>Activa tu disponibilidad y responde aquí mientras tengas esta página abierta. Si no respondes en 90 segundos, Vertix toma el chat.</p>
+      <div class="row" style="margin-top:10px"><button id="sv-tog" class="ghost">Cargando...</button></div>
+      <div class="sv-lista" id="sv-lista"></div>
+      <div id="sv-box" class="hide"><b id="sv-quien"></b><div class="sv-log" id="sv-log"></div>
+        <form class="sv-form" id="sv-form" autocomplete="off"><input id="sv-in" maxlength="800" placeholder="Responder..."><button type="submit">Enviar</button></form>
+        <div class="row" style="margin-top:10px"><button class="danger" id="sv-close" type="button">Cerrar chat</button></div></div>
+      <div class="msg" id="sv-m"></div>
+    </div>
+</div>
+<div class="tab hide" data-t="updates">
+    <div class="card"><h3>Publicar actualización</h3>
+      <p>Se publica en Discord (con el webhook de tu API) y también en la pestaña Updates de la página.</p>
+      <label for="u-t">Título</label><input id="u-t" maxlength="100" placeholder="Ej: Update v4.8">
+      <label for="u-v">Versión</label><input id="u-v" maxlength="20" placeholder="Ej: 4.8">
+      <label for="u-d">Descripción</label><textarea id="u-d" maxlength="1800" placeholder="Qué cambió..."></textarea>
+      <div class="row"><button id="u-pub">Publicar actualización</button><button class="ghost" id="u-ver">Ver últimos</button></div>
+      <div class="msg" id="u-m"></div><pre class="ls hide" id="u-list" style="margin-top:10px;max-height:260px;overflow:auto"></pre>
+    </div>
+</div>
+<div class="tab hide" data-t="sistema">
+    <div class="card"><h3>Cuentas verificadas</h3><p id="vcount">...</p><div class="row"><button class="ghost" id="vlist">Ver lista</button></div><pre class="ls hide" id="vpre" style="margin-top:10px;max-height:260px;overflow:auto"></pre></div>
+  <div class="card"><h3>Banner y fondo de Creador</h3><p>Imágenes de tu sección Creador. JPG, PNG, WEBP o GIF animado. Las fotos se achican solas (máximo 1 MB); los GIF se suben tal cual (máximo 4 MB).</p>
+    <label>Banner (arriba de la sección, mejor horizontal)</label>
+    <div class="row" style="margin-top:6px"><input type="file" id="cr-banner-f" accept="image/*" style="flex:1"><button class="ghost" id="cr-banner-x">Quitar</button></div>
+    <img id="cr-banner-p" alt="" style="display:none;max-width:100%;border-radius:12px;margin-top:10px;border:1px solid var(--line)">
+    <label>Fondo (detrás de toda la sección)</label>
+    <div class="row" style="margin-top:6px"><input type="file" id="cr-fondo-f" accept="image/*" style="flex:1"><button class="ghost" id="cr-fondo-x">Quitar</button></div>
+    <img id="cr-fondo-p" alt="" style="display:none;max-width:60%;border-radius:12px;margin-top:10px;border:1px solid var(--line)">
+    <div class="msg" id="cr-msg"></div></div>
+  <div class="card"><h3>Diagnóstico</h3><p>Prueba si el servidor llega a Roblox y a Discord.</p><div class="row"><button class="ghost" id="diag">Ejecutar diagnóstico</button></div><pre class="ls hide" id="dpre" style="margin-top:10px"></pre></div>
+</div>
+  </section>
+</main>
+<script src="/common.js"></script><script src="/admin.js"></script>
+</body></html>

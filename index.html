@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><link rel="icon" type="image/png" href="/logo.png"><link rel="apple-touch-icon" href="/logo.png"><meta name="theme-color" content="#0b0714"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uzivert Hub</title><meta name="description" content="Uzivert Hub: scripts para Roblox, soporte y verificación de cuenta.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"><link rel="stylesheet" href="/style.css"></head>
+<body>
+<div id="cr-fondo" aria-hidden="true"></div>
+<canvas id="stars"></canvas>
+<header>
+  <div class="brand" id="brand" role="link" tabindex="0"><div class="orb"></div>UZIVERT HUB</div>
+  <button class="burger" id="menu-btn" aria-label="Abrir menú" aria-expanded="false" aria-controls="drawer"><span></span><span></span><span></span></button>
+  <nav id="nav"><span class="pill" id="pill"></span><a data-p="inicio" class="on">Inicio</a><a data-p="scripts">Scripts</a><a data-p="foro">Foro</a><a data-p="vertix">Vertix</a><a data-p="soporte">Soporte</a></nav>
+</header>
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" aria-label="Menú">
+  <div class="dr-head"><div class="brand"><div class="orb"></div>UZIVERT HUB</div><button class="close" id="menu-close" aria-label="Cerrar menú">&times;</button></div>
+  <div class="dr-list">
+    <a data-p="verificar"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.500-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Verificar (opcional)</a>
+    <a data-p="updates"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>Updates</a>
+    <a data-p="vertix"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="8.6" cy="6" rx="2" ry="4.6" transform="rotate(-8 8.6 6)"/><ellipse cx="15.4" cy="6" rx="2" ry="4.6" transform="rotate(8 15.4 6)"/><ellipse cx="12" cy="15.6" rx="6.6" ry="5.2"/><circle cx="9.7" cy="15" r=".9" fill="currentColor" stroke="none"/><circle cx="14.3" cy="15" r=".9" fill="currentColor" stroke="none"/><path d="M11 17.3h2l-1 1.1z" fill="currentColor"/></svg>Vertix <span class="beta" style="margin-left:2px">BETA</span></a>
+    <a data-p="donaciones"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.8a4.3 4.3 0 0 1 7.5 2.7c0 5.4-7.5 10-7.5 10z"/></svg>Donaciones</a>
+    <a data-p="estado"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2.5-6 4 12 2.5-6H21"/></svg>Estado del servicio</a>
+    <a data-p="faq"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.6a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1.1.9-1.1 1.7"/><circle cx="12" cy="17" r=".7" fill="currentColor" stroke="none"/></svg>Preguntas frecuentes</a>
+    <a data-p="creador"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4-6.5 8-6.5s7 2 8 6.5"/></svg>Creador</a>
+    <a data-p="creditos"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0 1 12 7.2 4.3 4.3 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg>Créditos</a>
+    <a data-p="terminos"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h5M9.5 16h5"/></svg>Términos y condiciones</a>
+    <a id="dc" class="dcbtn" target="_blank" rel="noopener">Discord</a>
+  </div>
+  <div class="dr-foot"><div>Versión de la página</div><b id="ver">v1.2.1</b><div style="margin-top:10px">Uzivert Hub. Todos los derechos reservados.</div></div>
+</aside>
+<main>
+  <section class="page on" id="p-inicio">
+    <div class="hero"><div class="orb"></div><h1>UZIVERT HUB</h1><p class="lead">Scripts para Roblox. Todo en un solo lugar.</p>
+      <div class="row" style="justify-content:center"><button data-go="scripts">Ver scripts</button><button class="ghost" data-go="vertix">Hablar con Vertix</button></div></div>
+    <div class="grid" style="margin-top:34px">
+      <div class="card"><h3>API segura</h3><p>Conexiones cifradas y protegidas.</p></div>
+      <div class="card"><h3>Anti stealers</h3><p>Protección contra robo de cuentas.</p></div>
+      <div class="card"><h3>Sin trabas</h3><p>Copia los scripts directo, sin verificar nada.</p></div>
+      <div class="card"><h3>Verificar es opcional</h3><p>Sirve para el foro y para tu cuenta. Nunca pedimos contraseña, PIN ni correo.</p></div>
+    </div>
+  </section>
+
+  <section class="page" id="p-creador">
+    <div class="cr-banner" id="cr-banner" hidden><div class="cr-banner-in"><span class="cr-tag">CREADOR</span><b>Uzivert</b></div></div>
+    <h2>Creador</h2><p class="lead" style="font-size:16px;margin-top:6px">Quién está detrás de Uzivert Hub.</p>
+    <div class="card"><h3>Uzivert</h3><p>Desarrollo y mantenimiento de todos los scripts y de esta página. Uzivert Hub es un proyecto independiente hecho para la comunidad de Roblox.</p></div>
+    <div class="card"><h3>Cómo se actualizan los scripts</h3>
+      <p>Los scripts se actualizan <b>cada vez que realmente hace falta</b>: cuando un juego cambia, cuando aparece un error o cuando hay una mejora que vale la pena.</p>
+      <p style="margin-top:10px">El único script que se actualiza <b>cada semana</b> es el de <b>Murder Mystery 2 (MM2)</b>.</p>
+    </div>
+    <div class="card"><h3>Contacto</h3><p>Para dudas, errores o sugerencias usa la pestaña Soporte o entra al Discord.</p><div class="row"><button data-go="soporte">Ir a Soporte</button><a class="btn dcbtn" id="dc2" target="_blank" rel="noopener">Abrir Discord</a></div></div>
+  </section>
+
+  <section class="page" id="p-updates">
+    <h2>Updates</h2><p class="lead" style="font-size:16px;margin-top:6px">Todas las novedades y actualizaciones de Uzivert Hub.</p>
+    <div id="up-box"><p class="nota">Cargando...</p></div>
+  </section>
+
+  <section class="page" id="p-donaciones">
+    <h2>Donaciones</h2><p class="lead" style="font-size:16px;margin-top:6px">Ayuda a mejorar Vertix y Uzivert Hub.</p>
+    <div class="card" style="margin-top:14px;text-align:center"><span class="beta" style="margin:0">PRÓXIMAMENTE</span>
+      <p style="margin:12px 0 6px"><b>Las donaciones estarán disponibles pronto.</b></p>
+      <p class="nota">Todavía no hay cuenta habilitada: no envíes dinero a nadie que diga ser de Uzivert Hub.</p></div>
+    <div class="card" style="margin-top:14px"><h3>Qué es Vertix</h3>
+      <p class="nota" style="font-size:15px;line-height:1.6">Vertix es un asistente de inteligencia artificial inspirado en Jarvis. Fue creado por Uzivert para ayudar a la comunidad de Uzivert Hub con sus dudas y con los problemas que tengan con los scripts, y para hacerles todo más fácil.</p></div>
+    <div class="card" style="margin-top:14px"><h3>En qué estado está</h3>
+      <p class="nota" style="font-size:15px;line-height:1.6">Vertix está en desarrollo (beta). Todavía no cuenta con un modelo lo bastante potente, y por eso a veces puede equivocarse o tardar en responder.</p></div>
+    <div class="card" style="margin-top:14px"><h3>Para qué servirán las donaciones</h3>
+      <p class="nota" style="font-size:15px;line-height:1.6">Para mejorar a Vertix vamos a abrir una cuenta de donaciones. Con lo que se done se va a financiar:</p>
+      <ul class="ck ok"><li>Una base de datos propia.</li><li>Mejores modelos de IA.</li><li>Más tokens, para que más personas puedan usarlo.</li><li>Un dominio propio para la página.</li><li>Una API más segura.</li></ul>
+      <p class="nota" style="font-size:15px;line-height:1.6">El creador no se quedará con nada de este dinero. Todo será invertido en Uzivert Hub y en Vertix, para que tengan la mejor experiencia posible.</p></div>
+    <div class="card" style="margin-top:14px"><h3>Nuestro compromiso</h3>
+      <p class="nota" style="font-size:15px;line-height:1.6">Vertix siempre estará para ayudarte, siempre y cuando haya tokens disponibles.</p></div>
+  </section>
+  <section class="page" id="p-estado">
+    <h2>Estado del servicio</h2><p class="lead" style="font-size:16px;margin-top:6px">Mira si todo está funcionando ahora mismo.</p>
+    <div id="es-box"><p class="nota">Cargando...</p></div>
+    <p class="nota" id="es-hora" style="margin-top:12px"></p>
+  </section>
+
+  <section class="page" id="p-faq">
+    <h2>Preguntas frecuentes</h2><p class="lead" style="font-size:16px;margin-top:6px">Las dudas más comunes, resueltas.</p>
+    <div style="margin-top:14px"><details class="faq"><summary>¿Qué es Uzivert Hub?</summary><p>Es un conjunto de scripts para Roblox hechos por Uzivert. Aquí puedes copiarlos, ver su estado, hablar en el foro y pedir soporte.</p></details><details class="faq"><summary>¿Cómo verifico mi cuenta?</summary><p>Entra a la pestaña Verificar, escribe tu usuario de Roblox y toca Obtener código. Pega esas 5 palabras en la descripción (Acerca de) de tu perfil de Roblox, guarda y vuelve a tocar Verificar. En esa misma pestaña hay un video que lo explica paso a paso.</p></details><details class="faq"><summary>¿Es seguro verificarme?</summary><p>Sí. Nunca te pedimos contraseña, PIN ni correo. Solo pones 5 palabras en tu descripción, que es pública. Cuando termines puedes borrarlas.</p></details><details class="faq"><summary>¿Cómo ejecuto un script?</summary><p>Ve a la pestaña Scripts, toca Copiar script, entra al juego en Roblox, pega el código en tu executor y ejecútalo.</p></details><details class="faq"><summary>El script no carga o da error, ¿qué hago?</summary><p>Primero mira la página Estado para ver si el script está funcionando o en mantenimiento. Después revisa que estés dentro del juego correcto y que tu executor esté actualizado. Si sigue fallando, escríbenos en Soporte o en el Discord.</p></details><details class="faq"><summary>¿Por qué me pide verificar para copiar un script?</summary><p>Algunos scripts son solo para cuentas verificadas. Otros dicen Sin verificación y los puede copiar cualquiera.</p></details><details class="faq"><summary>¿Cada cuánto se actualizan los scripts?</summary><p>Se actualizan cuando realmente hace falta. El único que se actualiza cada semana es el de MM2.</p></details><details class="faq"><summary>¿Cómo reporto un error o pido un script?</summary><p>Por la pestaña Soporte o en nuestro Discord. Cuéntanos qué script es y qué te pasa.</p></details><details class="faq"><summary>¿Puedo tener problemas en Roblox por usar scripts?</summary><p>Usar scripts va contra las reglas de Roblox y puede haber riesgo de sanción. Cada persona usa los scripts bajo su propia responsabilidad. Puedes leer más en Términos y condiciones.</p></details></div>
+    <div class="card"><h3>¿No encontraste tu respuesta?</h3><p>Escríbenos desde la pestaña Soporte y te ayudamos.</p><button data-go="soporte" style="margin-top:12px">Ir a Soporte</button></div>
+  </section>
+
+  <section class="page" id="p-creditos">
+    <h2>Créditos</h2><p class="lead" style="font-size:16px;margin-top:6px">Las personas y cosas que hacen posible Uzivert Hub.</p>
+    <div class="card"><h3>Desarrollo y diseño</h3><p>Uzivert: scripts, interfaz, página web, bot y servidor.</p></div>
+    <div class="card"><h3>Comunidad</h3><p>Gracias a todos los que prueban los scripts, reportan errores y dan ideas en el Discord. Sin ustedes el proyecto no avanza.</p></div>
+    <div class="card"><h3>Avisos</h3><p>Uzivert Hub no está afiliado, asociado ni respaldado por Roblox Corporation. Roblox y los nombres de los juegos pertenecen a sus respectivos dueños.</p></div>
+    <div class="card"><h3>Versión de la página</h3><p id="ver2">v1.2.1</p></div>
+  </section>
+
+  <section class="page" id="p-terminos">
+    <h2>Términos y condiciones</h2><p class="lead" style="font-size:16px;margin-top:6px">Al usar esta página y los scripts aceptas estos términos.</p>
+    <div class="card terms">
+      <h3>1. Uso bajo tu responsabilidad</h3><p>Los scripts de Uzivert Hub son herramientas para Roblox. Usar scripts de terceros puede ir contra las normas de Roblox o de cada juego y puede causar sanciones en tu cuenta. Los usas bajo tu propia responsabilidad y Uzivert Hub no se hace responsable de baneos, pérdidas o daños.</p>
+      <h3>2. Sin garantía</h3><p>Los scripts y la página se ofrecen tal cual, sin garantía de que funcionen siempre. Pueden dejar de funcionar cuando un juego cambia, y pueden ponerse en mantenimiento o retirarse sin aviso.</p>
+      <h3>3. Verificación de cuenta (opcional)</h3><p>La verificación es opcional: puedes copiar y usar los scripts sin verificarte. Sirve para publicar en el foro y para que el staff reconozca tu cuenta. Para verificar tu cuenta solo te pedimos pegar un código de palabras en tu descripción pública de Roblox. Nunca te pedimos contraseña, PIN, correo, códigos de verificación en dos pasos ni cookies. Guardamos únicamente tu nombre de usuario e ID de Roblox, que son datos públicos. Si alguien te pide lo contrario en nombre de Uzivert Hub, es una estafa.</p>
+      <h3>4. Datos que se guardan al usar los scripts</h3><p>Al ejecutar un script de Uzivert Hub se puede registrar tu nombre de usuario e ID público de Roblox, la cantidad de ejecuciones y la fecha de la primera y la última, para contar el uso y poder sancionar abusos. No guardamos contraseñas, correos, cookies ni datos de pago. Si no estás de acuerdo, no ejecutes los scripts.</p>
+      <h3>5. Vertix (asistente de IA)</h3><p>Vertix es el asistente de inteligencia artificial de Uzivert Hub, disponible en la página y en el Discord. Sus respuestas las genera una IA: pueden tener errores, no son una garantía ni un consejo profesional y debes comprobarlas antes de confiar en ellas. Tus mensajes a Vertix se procesan con proveedores externos de IA y pueden guardarse un tiempo para dar soporte, mejorar el servicio y detectar abusos; no escribas contraseñas, datos personales ni información privada. Vertix puede darte los loaders oficiales y, solo al staff autorizado, ejecutar acciones de administración. No uses a Vertix para estafas, spam, acoso, contenido ilegal u ofensivo ni para intentar sacarle datos internos, códigos o claves: podemos limitar o bloquear tu acceso a Vertix y al Discord sin aviso.</p>
+      <h3>6. Foro y comunidad</h3><p>Sé respetuoso. No se permiten links, estafas, spam, insultos ni contenido ilegal u ofensivo. El staff puede borrar mensajes, cerrar temas y bloquear el acceso al foro sin aviso.</p>
+      <h3>7. Acceso y sanciones</h3><p>Podemos limitar o quitar el acceso a los scripts, a la verificación o al foro a quien abuse del servicio, intente robar o redistribuir los scripts, o incumpla estos términos.</p>
+      <h3>8. Propiedad</h3><p>Los scripts, el diseño y el contenido de Uzivert Hub son de su creador. No está permitido copiarlos, revenderlos ni publicarlos como propios sin permiso. Todos los derechos reservados.</p>
+      <h3>9. Cambios</h3><p>Podemos actualizar estos términos en cualquier momento. Seguir usando la página significa que aceptas la versión vigente.</p>
+      <h3>10. Contacto</h3><p>Dudas sobre estos términos: pestaña Soporte o Discord.</p>
+    </div>
+  </section>
+
+  <section class="page" id="p-scripts">
+    <h2>Scripts</h2><p class="lead" style="font-size:16px;margin-top:6px">Los scripts oficiales de Uzivert Hub. Cópialos directo, no hace falta verificar tu cuenta.</p>
+    <div class="msg" id="sc-lock"></div>
+    <div id="sc-list"></div>
+    <p id="sc-empty" class="hide" style="color:var(--sub)">Todavía no hay scripts publicados.</p>
+  </section>
+
+  <section class="page" id="p-foro">
+    <div id="f-lista">
+      <h2>Foro</h2><p class="lead" style="font-size:16px;margin-top:6px">Habla con la comunidad. Para publicar en el foro necesitas tener tu cuenta verificada (la verificación es opcional y solo se pide acá).</p>
+      <div class="chips" id="f-cats"></div>
+      <div class="row" style="margin-top:0;margin-bottom:14px"><button id="f-nuevo">Nuevo tema</button></div>
+      <form class="card hide" id="f-form" autocomplete="off">
+        <label for="f-cat">Categoría</label><select id="f-cat"></select>
+        <label for="f-tit">Título</label><input id="f-tit" maxlength="80">
+        <label for="f-txt">Mensaje</label><textarea id="f-txt" maxlength="1500"></textarea>
+        <p class="nota">Por seguridad no se permiten links. Sé respetuoso.</p>
+        <div class="row"><button type="submit" id="f-pub">Publicar</button><button type="button" class="ghost" id="f-cancel">Cancelar</button></div>
+        <div class="msg" id="f-msg"></div>
+      </form>
+      <div id="f-temas"></div>
+      <p id="f-vacio" class="hide" style="color:var(--sub)">Todavía no hay temas. Sé el primero en publicar.</p>
+    </div>
+    <div id="f-hilo" class="hide">
+      <button class="ghost" id="f-volver">&larr; Volver al foro</button>
+      <div class="card" id="f-op" style="margin-top:14px"></div>
+      <div id="f-resp"></div>
+      <form class="card" id="f-rform" autocomplete="off">
+        <label for="f-rtxt">Responder</label><textarea id="f-rtxt" maxlength="1500" style="min-height:90px"></textarea>
+        <div class="row"><button type="submit" id="f-rpub">Responder</button></div>
+        <div class="msg" id="f-rmsg"></div>
+      </form>
+    </div>
+  </section>
+
+  <section class="page" id="p-verificar">
+    <h2>Verificar cuenta</h2><p class="lead" style="font-size:16px;margin-top:6px">Opcional: demuestra que tu cuenta de Roblox es tuya. Sirve para publicar en el foro y para que el staff te reconozca. Los scripts los puedes usar sin verificarte.</p>
+    <div class="card vid" id="vid-card">
+      <h3>¿No sabes cómo verificarte?</h3><p>Mira este video: te lo explica paso a paso en menos de un minuto.</p>
+      <button id="vid-btn" class="vbtn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Ver video tutorial</button>
+      <div id="vid-box" class="hide"></div>
+    </div>
+    <div class="card safe">
+      <h3>Verificar tu cuenta es seguro</h3>
+      <p>Solo te pedimos pegar <b>5 palabras al azar</b> en tu descripción pública de Roblox. Con eso comprobamos que la cuenta es tuya. Nada más.</p>
+      <ul class="ck bad"><li>Nunca te pedimos tu <b>contraseña</b></li><li>Nunca te pedimos tu <b>PIN</b> de la cuenta</li><li>Nunca te pedimos tu <b>correo</b> ni códigos de verificación en 2 pasos</li><li>Nunca te pedimos tu <b>cookie</b> (.ROBLOSECURITY)</li></ul>
+      <ul class="ck ok"><li>Solo leemos tu <b>nombre de usuario</b> y tu <b>descripción pública</b></li><li>Guardamos únicamente tu usuario e ID de Roblox (datos públicos)</li><li>Cuando termines, puedes <b>borrar las palabras</b> de tu descripción</li></ul>
+      <p class="warn">Si alguien te pide tu contraseña, PIN o cookie en nombre de Uzivert Hub, es una estafa: no lo hagas y avísanos en el Discord.</p>
+    </div>
+    <div class="card" id="v-ok" style="display:none">
+      <h3>Cuenta verificada: <span id="v-name"></span></h3><p>Este es el loadstring oficial. Cópialo y pégalo en tu ejecutor.</p>
+      <pre class="ls" id="v-ls">Cargando...</pre>
+      <div class="row"><button id="v-copy">Copiar script</button><button class="ghost" id="v-out">Cerrar sesión</button></div>
+    </div>
+    <div class="card" id="v-s1">
+      <h3>Paso 1: tu usuario de Roblox</h3>
+      <label for="v-user">Usuario</label><input id="v-user" maxlength="20" autocomplete="off" placeholder="TuUsuario">
+      <div class="row"><button id="v-start">Obtener código</button></div>
+    </div>
+    <div class="card hide" id="v-s2">
+      <h3>Paso 2: pega el código en tu descripción</h3>
+      <div class="code" id="v-code"></div>
+      <ol class="steps"><li>Abre tu perfil de Roblox y entra a <b>Editar perfil</b>.</li><li>Pega el código en <b>Acerca de</b> tal cual, con las 5 palabras en minúsculas, y guarda.</li><li>Vuelve aquí y toca <b>Verificar</b>. Después puedes borrar el código.</li></ol>
+      <div class="row"><button id="v-check">Verificar</button><button class="ghost" id="v-cancel">Cancelar</button></div>
+    </div>
+    <div class="msg" id="v-msg"></div>
+  </section>
+
+  <section class="page" id="p-vertix">
+    <div class="vx-top">
+      <button type="button" class="vx-back" id="vx-back" aria-label="Volver al inicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Inicio</span></button>
+      <div class="vx-tbox"><div class="vx-tit"><b>Vertix</b><span class="beta">BETA</span></div><div class="vx-sub"><i class="vx-dot"></i><span>Asistente de IA · v0.3.0</span></div></div>
+      <span class="vx-cnt" id="vx-cnt" title="Mensajes restantes"></span>
+      <label class="vx-chk" title="Respuestas en voz"><input type="checkbox" id="vx-voz" checked> Voz</label>
+    </div>
+    <div class="vx-modos" id="vx-modos" role="group" aria-label="Modo de Vertix"><button type="button" data-m="auto" class="on">Auto</button><button type="button" data-m="normal">Normal</button><button type="button" data-m="programador">Programador</button><button type="button" data-m="psicologo">Psicólogo</button></div>
+    <div class="vx-modrow"><button type="button" class="vx-pill" id="vx-vp" aria-haspopup="dialog" aria-expanded="false"><span id="vx-vpn">Voz: Automática</span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><div class="vx-sheet vx-vsheet" id="vx-vsheet" hidden></div></div>
+    <div class="card vx">
+      <div class="vx-log" id="vx-log" aria-live="polite"></div>
+      <div class="vx-comp" id="vx-comp">
+        <div id="vx-prev" class="vx-prev" hidden><img id="vx-prev-img" alt=""><button type="button" id="vx-prev-x" class="ghost" aria-label="Quitar foto">Quitar</button></div>
+        <textarea id="vx-in" rows="1" maxlength="300" placeholder="Pregúntale algo a Vertix..." autocomplete="off"></textarea>
+        <div class="vx-tools">
+          <button type="button" id="vx-foto" class="vx-ib" aria-label="Adjuntar una foto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 9"/></svg></button><input type="file" id="vx-file" accept="image/*" hidden>
+          <button type="button" id="vx-mic" class="vx-ib vx-mic" aria-label="Hablar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
+          <span class="vx-sp"></span>
+          <button type="button" class="vx-sel" id="vx-mod" aria-haspopup="listbox" aria-expanded="false"><small>Modelo</small><span><i id="vx-modn">Modelo</i><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></button>
+          <button type="button" class="vx-sel" id="vx-raz" aria-haspopup="dialog" aria-expanded="false"><small>Razonamiento</small><span><i id="vx-razn">Equilibrado</i><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span></button>
+          <button type="button" id="vx-send" class="vx-ib vx-go" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button>
+        </div>
+        <div class="vx-sheet vx-up" id="vx-sheet" role="listbox" hidden></div>
+        <div class="vx-sheet vx-up vx-rsheet" id="vx-rsheet" hidden>
+          <div class="vx-rt">Profundidad</div><div class="vx-rn" id="vx-rname">Equilibrado</div>
+          <input type="range" id="vx-razr" min="0" max="2" step="1" value="1" aria-label="Razonamiento">
+          <div class="vx-rl"><span>Ágil</span><span>Equilibrado</span><span>Profundo</span></div>
+        </div>
+      </div>
+      <div class="vx-foot"><span id="vx-info"></span><span>Vertix puede equivocarse. No compartas contraseñas ni tokens.</span></div>
+      <div class="msg" id="vx-res"></div>
+    </div>
+  </section>
+  <section class="page" id="p-soporte">
+    <h2>Soporte</h2><p class="lead" style="font-size:16px;margin-top:6px">Cuéntanos tu problema o idea y el equipo lo recibe al instante.</p>
+    <div class="card" id="sv-card"><h3>Soporte en vivo</h3>
+      <p id="sv-sub">Habla ahora con el equipo. Si no hay nadie conectado, Vertix toma tu caso y se lo pasa al equipo.</p>
+      <div id="sv-pre"><label for="sv-nombre">Tu nombre (opcional)</label><input id="sv-nombre" maxlength="40" placeholder="Cómo te llamas">
+        <label for="sv-contacto">Contacto (Roblox, Discord o correo, opcional)</label><input id="sv-contacto" maxlength="100" placeholder="TuUsuarioRoblox">
+        <div class="row"><button id="sv-start">Iniciar soporte en vivo</button></div></div>
+      <div id="sv-chat" class="hide"><div class="sv-estado" id="sv-estado"></div><div class="sv-log" id="sv-log"></div>
+        <form class="sv-form" id="sv-form" autocomplete="off"><input id="sv-in" maxlength="800" placeholder="Escribe tu mensaje..."><button type="submit" id="sv-send">Enviar</button></form>
+        <div class="row" style="margin-top:10px"><button class="ghost" id="sv-end" type="button">Terminar chat</button></div></div>
+      <div class="msg" id="sv-res"></div>
+    </div>
+    <form class="card" id="s-form" autocomplete="off">
+      <label for="s-asunto">Asunto</label>
+      <select id="s-asunto"><option>Ayuda</option><option>Bug</option><option>Sugerencia</option><option value="Apelacion">Apelación</option><option>Otro</option></select>
+      <label for="s-contacto">Cómo te contactamos (Discord o Roblox, opcional)</label><input id="s-contacto" maxlength="100" placeholder="usuario#0000 / TuUsuarioRoblox">
+      <label for="s-msg">Mensaje</label><textarea id="s-msg" maxlength="1500" placeholder="Explica con detalle qué pasó..."></textarea>
+      <input class="hp" id="s-web" tabindex="-1" aria-hidden="true" autocomplete="off">
+      <div class="row"><button type="submit" id="s-send">Enviar mensaje</button><span id="s-count" style="color:var(--sub);font-size:13px;align-self:center">0/1500</span></div>
+      <div class="msg" id="s-res"></div>
+    </form>
+  </section>
+</main>
+<footer>&copy; <span id="year">2026</span> Uzivert Hub. Todos los derechos reservados.</footer>
+<script src="/common.js"></script><script src="/app.js"></script>
+</body></html>
