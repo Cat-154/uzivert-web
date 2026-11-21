@@ -213,6 +213,19 @@ end
 `);
   });
 
+  // Bienvenida de cuenta verificada (la usaran los hubs al arrancar): pide la tarjeta al servidor con tu HWID y usuario
+  app.get('/m2/bienvenida.lua', (req, res) => {
+    lua(res, LUA_COMUN + String.raw`
+local ok, src = pcall(function()
+    return game:HttpGet("${baseUrl(req)}/m2/b?h=" .. UZ_HS:UrlEncode(UZ_HWID()) .. "&u=" .. tostring(UZ_LP.UserId) .. "&n=" .. UZ_HS:UrlEncode(UZ_LP.Name))
+end)
+if ok and type(src) == "string" and #src > 0 then
+    local f, e = loadstring(src)
+    if f then f() else warn("Uzivert: " .. tostring(e)) end
+end
+`);
+  });
+
   // 2) Loader personal: stub chico que manda HWID + usuario al servidor
   app.get('/m2/p/:token', (req, res) => {
     const tk = limpiar(req.params.token, 80);
