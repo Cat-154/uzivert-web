@@ -775,6 +775,7 @@ app.get('/api/admin/verificados', adminOnly, async (req, res) => res.json(await 
 // ---------- LISTA PUBLICA DE SCRIPTS ----------
 const baseUrl = (req) => (env.PUBLIC_URL || `${String(req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim()}://${req.headers.host}`).replace(/\/$/, '');
 // Membresias (aditivo; apagado salvo MEMBRESIAS=1)
+try { require('./baneos')(app, { adminOnly, audit, store, limited, ip, clean, baseUrl, ROBLOX_USERS, apiAdmin }); } catch (e) { console.error('[baneos] no se cargo:', e.message); }
 try { require('./vertixmodo')(app, { adminOnly, audit, store }); } catch (e) { console.error('[vertix-modo] no se cargo:', e.message); }
 try { require('./membresias')(app, { adminOnly, audit, baseUrl, env, ROBLOX_USERS }); } catch (e) { console.error('[membresias] no se cargo:', e.message); }
 // Estado de UN script por su ruta o slug (lo consultan los loaders cada 10 s para cerrar el script si pasa a mantenimiento).
@@ -1223,12 +1224,13 @@ app.get('/s/:slug', async (req, res) => {
     if (!meta || (meta.estado !== 'activo' && meta.estado !== 'enlace')) return res.status(404).send('-- no encontrado');
     if (meta.situacion === 'mant' || meta.situacion === 'caido') return res.send(meta.cartel === 'costado' ? luaMantCostado(meta.name, loaderUrl(baseUrl(req), meta)) : luaMantenimiento(loaderUrl(baseUrl(req), meta)));
     if (!isAdmin(req)) contarEjec(slug, quien);
+    const pb = app.__baneoPre ? app.__baneoPre(req) : '';
     const c = cache.get(slug);
-    if (c && Date.now() - c.t < 30e3) return res.send(c.code);
+    if (c && Date.now() - c.t < 30e3) return res.send(pb + c.code);
     const code = await store.read(`scripts/${slug}.lua`);
     if (code == null) return res.status(404).send('-- no encontrado');
     cache.set(slug, { t: Date.now(), code });
-    res.send(code);
+    res.send(pb + code);
   } catch (e) { res.status(502).send('-- error temporal'); }
 });
 
@@ -1398,12 +1400,13 @@ app.get('/x/d', async (req, res) => {
     if (meta.situacion === 'mant' || meta.situacion === 'caido') return res.send(meta.cartel === 'costado' ? luaMantCostado(meta.name, urlVivo) : luaMantenimiento(urlVivo));
     if (!isAdmin(req)) contarEjec(row.slug, quien);
     xNota(req, '/x/d', 'entregado', info);
+    const pb = app.__baneoPre ? app.__baneoPre(req) : '';
     const c = cache.get(row.slug);
-    if (c && Date.now() - c.t < 30e3) return res.send(c.code);
+    if (c && Date.now() - c.t < 30e3) return res.send(pb + c.code);
     const code = await store.read(`scripts/${row.slug}.lua`);
     if (code == null) return res.send(XDECOY);
     cache.set(row.slug, { t: Date.now(), code });
-    res.send(code);
+    res.send(pb + code);
   } catch (e) { res.status(502).send('-- error temporal'); }
 });
 
@@ -1474,7 +1477,7 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 if (fs.existsSync(path.join(PUBLIC_DIR, 'index.html'))) {
   app.use(express.static(PUBLIC_DIR));
 } else {
-  const PAGINA = new Set(['index.html', 'admin.html', 'style.css', 'app.js', 'admin.js', 'admin-membresias.js', 'admin-vertix.js', 'common.js', 'logo.png']);
+  const PAGINA = new Set(['index.html', 'admin.html', 'style.css', 'app.js', 'admin.js', 'admin-membresias.js', 'admin-vertix.js', 'admin-baneos.js', 'common.js', 'logo.png']);
   const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.png': 'image/png' };
   console.log('[aviso] No hay carpeta public/: sirviendo los archivos de la página desde la raiz.');
   app.use((req, res, next) => {
