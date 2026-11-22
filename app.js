@@ -487,7 +487,7 @@ async function vxEnviar(texto, op) {
   vxOcupado = false; $('vx-log').scrollTop = 1e9;
 }
 let vxModelo = ''; try { vxModelo = localStorage.getItem('vx_modelo') || ''; } catch {}
-let vxIlim = false, vxMax = 50, vxEsperaTimer = 0;
+let vxIlim = false, vxMax = 50, vxEsperaTimer = 0, vxPausado = false;
 function vxCuota(d) {
   if (!d || vxIlim) return;
   const c = $('vx-cnt'), inp = $('vx-in');
@@ -504,6 +504,16 @@ function vxEstadoGet() {
     vxIlim = !!d.ilimitado; vxMax = d.max || 50;
     $('vx-cnt').textContent = d.ilimitado ? 'Ilimitado' : d.restantes + '/' + vxMax; $('vx-cnt').classList.toggle('low', !d.ilimitado && d.restantes <= 5);
     $('vx-info').textContent = !d.activo ? 'No disponible por ahora' : d.ilimitado ? 'Sin límite de mensajes (admin)' : 'Cada mensaje gasta 1 de ' + vxMax;
+    // Modo mantenimiento / apagado (lo pones en el admin, pestaña Vertix)
+    const mv = d.modoVertix, pausa = !!(mv && mv.modo !== 'normal' && !d.ilimitado), SRok = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+    if (pausa) {
+      $('vx-info').textContent = (mv.modo === 'mant' ? 'En mantenimiento: ' : 'Apagado: ') + (mv.mensaje || '');
+      $('vx-info').style.color = mv.modo === 'mant' ? '#f0b429' : '#ef4444';
+      $('vx-in').disabled = true; $('vx-send').disabled = true; if (SRok) $('vx-mic').disabled = true; vxPausado = true;
+    } else {
+      $('vx-info').style.color = '';
+      if (vxPausado) { vxPausado = false; $('vx-in').disabled = false; $('vx-send').disabled = false; if (SRok) $('vx-mic').disabled = false; }
+    }
     const ms = d.modelos || [];
     if (!ms.find((m) => m.id === vxModelo && !m.bloqueado)) { const f = ms.find((m) => !m.bloqueado); vxModelo = f ? f.id : ''; }
     const sh = $('vx-sheet'); sh.textContent = '';
@@ -527,6 +537,7 @@ function vxVozInit() {
 function vxInit() {
   if (vxListo) return; vxListo = true;
   vxEstadoGet(); vxVozInit();
+  setInterval(() => { if (!document.hidden && !vxOcupado) vxEstadoGet(); }, 60000);   // detecta cuando Vertix pasa a mantenimiento o vuelve
   $('vx-mod').addEventListener('click', () => { const sh = $('vx-sheet'); sh.hidden = !sh.hidden; $('vx-mod').setAttribute('aria-expanded', String(!sh.hidden)); if (!sh.hidden) { $('vx-vsheet').hidden = true; $('vx-rsheet').hidden = true; } });
   vxMsg('a', 'Hola, soy Vertix (beta v0.3.0). Pídeme que reproduzca música, busque algo, abra una página o te ayude con código.'); $('vx-back').addEventListener('click', () => go('inicio'));
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
