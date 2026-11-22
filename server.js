@@ -410,7 +410,7 @@ function vxParse(c) {
 }
 vxModelosInit();
 app.__vxParse = vxParse;
-app.get('/api/vertix/estado', async (req, res) => { noStore(res); await vxCargada; res.json(Object.assign({ activo: !!DEEPSEEK_KEY, modelos: VX_MODELOS.map((m) => ({ id: m.id, nombre: m.nombre, desc: m.mant ? 'En mantenimiento' : m.desc, mant: m.mant, bloqueado: m.mant && !isAdmin(req) })) }, vxCuotaInfo(req, res))); });
+app.get('/api/vertix/estado', async (req, res) => { noStore(res); await vxCargada; res.json(Object.assign({ activo: !!DEEPSEEK_KEY && !(app.__vxModo && app.__vxModo().modo !== 'normal' && !isAdmin(req)), modoVertix: app.__vxModo ? app.__vxModo() : { modo: 'normal' }, modelos: VX_MODELOS.map((m) => ({ id: m.id, nombre: m.nombre, desc: m.mant ? 'En mantenimiento' : m.desc, mant: m.mant, bloqueado: m.mant && !isAdmin(req) })) }, vxCuotaInfo(req, res))); });
 
 
 // Guía de verificación (respuesta fija, sin IA: más confiable y no gasta tokens).
@@ -462,6 +462,7 @@ const vxPideCodigo = (t) => /\b(script|scripts|c[oó]digo|codigo|lua|luau|funci[
 const vxSoloIntro = (say) => say && !/```/.test(say) && say.length < 420 && /(aqu[ií] tienes|aqu[ií] est[aá]|ejemplo|a continuaci[oó]n|el siguiente|este script|te dejo)/i.test(say);
 const vertixHandler = async (req, res) => {
   noStore(res);
+  { const vm = app.__vxModo && app.__vxModo(); if (vm && vm.modo !== 'normal' && !isAdmin(req)) return res.status(503).json({ error: vm.mensaje, mantenimiento: true, modo: vm.modo }); }
   if (!DEEPSEEK_KEY) return res.status(503).json({ error: 'Vertix no está disponible por ahora.' });
   await vxCargada;
   const espera = vertixEspera(req, res);
@@ -774,6 +775,7 @@ app.get('/api/admin/verificados', adminOnly, async (req, res) => res.json(await 
 // ---------- LISTA PUBLICA DE SCRIPTS ----------
 const baseUrl = (req) => (env.PUBLIC_URL || `${String(req.headers['x-forwarded-proto'] || 'http').split(',')[0].trim()}://${req.headers.host}`).replace(/\/$/, '');
 // Membresias (aditivo; apagado salvo MEMBRESIAS=1)
+try { require('./vertixmodo')(app, { adminOnly, audit, store }); } catch (e) { console.error('[vertix-modo] no se cargo:', e.message); }
 try { require('./membresias')(app, { adminOnly, audit, baseUrl, env, ROBLOX_USERS }); } catch (e) { console.error('[membresias] no se cargo:', e.message); }
 // Estado de UN script por su ruta o slug (lo consultan los loaders cada 10 s para cerrar el script si pasa a mantenimiento).
 app.get('/api/estado-ruta', async (req, res) => {
@@ -1472,7 +1474,7 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 if (fs.existsSync(path.join(PUBLIC_DIR, 'index.html'))) {
   app.use(express.static(PUBLIC_DIR));
 } else {
-  const PAGINA = new Set(['index.html', 'admin.html', 'style.css', 'app.js', 'admin.js', 'admin-membresias.js', 'common.js', 'logo.png']);
+  const PAGINA = new Set(['index.html', 'admin.html', 'style.css', 'app.js', 'admin.js', 'admin-membresias.js', 'admin-vertix.js', 'common.js', 'logo.png']);
   const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'application/javascript; charset=utf-8', '.png': 'image/png' };
   console.log('[aviso] No hay carpeta public/: sirviendo los archivos de la página desde la raiz.');
   app.use((req, res, next) => {
@@ -1511,6 +1513,7 @@ Reglas: no prometas plazos ni arreglos. Nunca pidas contraseñas, PIN, cookies n
 Responde SOLO un objeto JSON con esta forma: {"say":"tu mensaje","fin":false,"contacto":"","resumen":""}. "fin" pasa a true solo cuando ya tienes el caso y el contacto (o se negó dos veces). "contacto" es el contacto que dio ("" si no). "resumen" es el caso en 1 a 3 líneas (solo cuando fin sea true).`;
 
 async function svVertix(c) {                                       // Vertix responde al chat
+  { const vm = app.__vxModo && app.__vxModo(); if (vm && vm.modo !== 'normal') { svPush(c, 'vertix', vm.mensaje + ' El equipo te responderá cuando pueda.'); return; } }
   if (c.pensando) return; c.pensando = true;
   try {
     const hist = c.msgs.slice(-24).map((m) => ({ role: m.de === 'usuario' ? 'user' : 'assistant', content: m.t }));
