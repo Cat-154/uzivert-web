@@ -93,19 +93,58 @@
   </section>
 
   <section class="page" id="p-terminos">
-    <h2>Términos y condiciones</h2><p class="lead" style="font-size:16px;margin-top:6px">Al usar esta página y los scripts aceptas estos términos.</p>
-    <div class="card terms">
-      <h3>1. Uso bajo tu responsabilidad</h3><p>Los scripts de Uzivert Hub son herramientas para Roblox. Usar scripts de terceros puede ir contra las normas de Roblox o de cada juego y puede causar sanciones en tu cuenta. Los usas bajo tu propia responsabilidad y Uzivert Hub no se hace responsable de baneos, pérdidas o daños.</p>
-      <h3>2. Sin garantía</h3><p>Los scripts y la página se ofrecen tal cual, sin garantía de que funcionen siempre. Pueden dejar de funcionar cuando un juego cambia, y pueden ponerse en mantenimiento o retirarse sin aviso.</p>
-      <h3>3. Verificación de cuenta (opcional)</h3><p>La verificación es opcional: puedes copiar y usar los scripts sin verificarte. Sirve para publicar en el foro y para que el staff reconozca tu cuenta. Para verificar tu cuenta solo te pedimos pegar un código de palabras en tu descripción pública de Roblox. Nunca te pedimos contraseña, PIN, correo, códigos de verificación en dos pasos ni cookies. Guardamos únicamente tu nombre de usuario e ID de Roblox, que son datos públicos. Si alguien te pide lo contrario en nombre de Uzivert Hub, es una estafa.</p>
-      <h3>4. Datos que se guardan al usar los scripts</h3><p>Al ejecutar un script de Uzivert Hub se puede registrar tu nombre de usuario e ID público de Roblox, la cantidad de ejecuciones y la fecha de la primera y la última, para contar el uso y poder sancionar abusos. No guardamos contraseñas, correos, cookies ni datos de pago. Si no estás de acuerdo, no ejecutes los scripts.</p>
-      <h3>5. Vertix (asistente de IA)</h3><p>Vertix es el asistente de inteligencia artificial de Uzivert Hub, disponible en la página y en el Discord. Sus respuestas las genera una IA: pueden tener errores, no son una garantía ni un consejo profesional y debes comprobarlas antes de confiar en ellas. Tus mensajes a Vertix se procesan con proveedores externos de IA y pueden guardarse un tiempo para dar soporte, mejorar el servicio y detectar abusos; no escribas contraseñas, datos personales ni información privada. Vertix puede darte los loaders oficiales y, solo al staff autorizado, ejecutar acciones de administración. No uses a Vertix para estafas, spam, acoso, contenido ilegal u ofensivo ni para intentar sacarle datos internos, códigos o claves: podemos limitar o bloquear tu acceso a Vertix y al Discord sin aviso.</p>
-      <h3>6. Foro y comunidad</h3><p>Sé respetuoso. No se permiten links, estafas, spam, insultos ni contenido ilegal u ofensivo. El staff puede borrar mensajes, cerrar temas y bloquear el acceso al foro sin aviso.</p>
-      <h3>7. Acceso y sanciones</h3><p>Podemos limitar o quitar el acceso a los scripts, a la verificación o al foro a quien abuse del servicio, intente robar o redistribuir los scripts, o incumpla estos términos.</p>
-      <h3>8. Propiedad</h3><p>Los scripts, el diseño y el contenido de Uzivert Hub son de su creador. No está permitido copiarlos, revenderlos ni publicarlos como propios sin permiso. Todos los derechos reservados.</p>
-      <h3>9. Cambios</h3><p>Podemos actualizar estos términos en cualquier momento. Seguir usando la página significa que aceptas la versión vigente.</p>
-      <h3>10. Contacto</h3><p>Dudas sobre estos términos: pestaña Soporte o Discord.</p>
+    <style>
+      #p-terminos .t-head{margin-bottom:22px}
+      #p-terminos .t-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+      #p-terminos .t-meta span{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--sub)}
+      #p-terminos .tdoc{display:flex;flex-direction:column;gap:14px}
+      #p-terminos .tsec{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px 64px;opacity:0;transform:translateY(26px);transition:opacity .6s cubic-bezier(.2,.8,.2,1),transform .6s cubic-bezier(.2,.8,.2,1),border-color .3s}
+      #p-terminos .tsec.in{opacity:1;transform:none}
+      #p-terminos .tsec:hover{border-color:#3a3d4a}
+      #p-terminos .tsec .n{position:absolute;left:18px;top:20px;width:32px;height:32px;border-radius:10px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--tx);background:#14151c}
+      #p-terminos .tsec h3{margin:0 0 8px;font-size:17px}
+      #p-terminos .tsec p{margin:0;color:var(--sub);line-height:1.65;font-size:14.5px}
+      #p-terminos .tsec ul{margin:10px 0 0;padding-left:18px;color:var(--sub);line-height:1.65;font-size:14.5px}
+      #p-terminos .tsec li{margin-bottom:6px}
+      #p-terminos .tsec b{color:var(--tx)}
+      #p-terminos .tfin{text-align:center;padding:34px 10px 10px;opacity:0;transform:translateY(26px);transition:all .6s cubic-bezier(.2,.8,.2,1)}
+      #p-terminos .tfin.in{opacity:1;transform:none}
+      #p-terminos .tfin p{color:var(--sub);margin:0 0 16px}
+      @media(max-width:560px){#p-terminos .tsec{padding:18px 16px 16px 16px}#p-terminos .tsec .n{position:static;margin-bottom:10px}}
+      @media(prefers-reduced-motion:reduce){#p-terminos .tsec,#p-terminos .tfin{opacity:1;transform:none;transition:none}}
+    </style>
+    <div class="t-head">
+      <h2>Términos y condiciones</h2>
+      <p class="lead" style="font-size:16px;margin-top:6px">Las reglas de uso de Uzivert Hub, sus scripts y sus membresías. Léelas con calma: al usar el servicio las aceptas.</p>
+      <div class="t-meta"><span>Última actualización: 23 de noviembre de 2026</span><span>Incluye Premium y Exclusiva</span><span>Compras en Robux</span></div>
     </div>
+    <div class="tdoc" id="t-doc">
+      <article class="tsec"><span class="n">1</span><h3>Aceptación de los términos</h3><p>Al usar esta página, el Discord o cualquier script de Uzivert Hub aceptas estos términos en su totalidad. Si no estás de acuerdo con alguno, no uses el servicio. Uzivert Hub es un proyecto independiente y no está afiliado, respaldado ni patrocinado por Roblox Corporation.</p></article>
+      <article class="tsec"><span class="n">2</span><h3>Uso bajo tu responsabilidad</h3><p>Los scripts de Uzivert Hub son herramientas para Roblox. Usar scripts de terceros puede ir contra las normas de Roblox o de cada juego y puede causar sanciones en tu cuenta, incluida la suspensión. Los usas bajo tu propia responsabilidad y Uzivert Hub no se hace responsable de ninguna sanción, pérdida de cuenta, objetos o progreso.</p></article>
+      <article class="tsec"><span class="n">3</span><h3>Sin garantía y disponibilidad</h3><p>La página y los scripts se ofrecen tal cual, sin garantía de que funcionen siempre ni de que no tengan errores. Pueden dejar de funcionar cuando un juego o Roblox cambia, y pueden ponerse en mantenimiento, modificarse o retirarse en cualquier momento y sin aviso. Esto aplica también a las funciones de pago.</p></article>
+      <article class="tsec"><span class="n">4</span><h3>Cuenta y verificación</h3><p>La verificación de cuenta es opcional: puedes usar los scripts gratuitos sin verificarte. Sirve para publicar en el foro, para que el staff reconozca tu cuenta y para vincular tu membresía. Solo pedimos pegar un código de palabras en tu descripción pública de Roblox o vincular tu Discord. Eres responsable de lo que se haga con tu cuenta y de no compartir tu loader ni tu identificador.</p></article>
+      <article class="tsec"><span class="n">5</span><h3>Datos que se guardan</h3><p>Al ejecutar un script se puede registrar tu nombre de usuario e ID público de Roblox, la cantidad de ejecuciones y la fecha de la primera y la última, para contar el uso y sancionar abusos. En las membresías se guarda además un identificador de tu dispositivo (HWID) en forma cifrada, tu cuenta de Discord vinculada y el plan que tienes. No guardamos contraseñas ni datos de pago. No vendemos tus datos.</p></article>
+      <article class="tsec"><span class="n">6</span><h3>Membresías Premium y Exclusiva</h3><p>Uzivert Hub ofrece dos membresías opcionales, independientes entre sí: <b>Premium</b> (160 Robux) y <b>Exclusiva</b> (80 Robux, disponible desde el 10 de diciembre). Son pases separados y acumulables: comprar una no incluye la otra, y quien compra ambas recibe ambas. Cada una desbloquea funciones, motores y pestañas propias dentro del hub. El hub gratuito sigue disponible para todos.</p><ul><li>El pago es único y la membresía es permanente mientras el servicio exista y no incumplas estos términos; no hay suscripción ni cobros recurrentes.</li><li>Las funciones de cada membresía pueden mejorarse, cambiarse, corregirse o reemplazarse con el tiempo; se agregarán y arreglarán más cosas, pero no se promete una lista fija de funciones.</li><li>La membresía es personal e intransferible: queda ligada a tu cuenta de Roblox. No se puede vender, prestar ni compartir.</li></ul></article>
+      <article class="tsec"><span class="n">7</span><h3>Dispositivo, loader y HWID</h3><p>Para proteger tu membresía, esta se vincula a tu cuenta de Roblox y al dispositivo donde la activas. El contenido de pago se entrega desde nuestro servidor solo a la cuenta y al dispositivo vinculados.</p><ul><li>Si cambias de dispositivo, puedes resetear tu HWID desde el panel de Discord una vez cada 6 horas.</li><li>Tu loader personal es solo tuyo. Compartirlo, filtrarlo o intentar extraer o copiar el contenido de pago es motivo de revocación inmediata sin reembolso.</li><li>Intentar eludir la validación, falsificar un dispositivo o usar una membresía ajena también es motivo de revocación.</li></ul></article>
+      <article class="tsec"><span class="n">8</span><h3>Compras y pagos</h3><p>Las compras se hacen en Robux. El proceso es manual: envías el pago, el staff lo confirma, registra tu usuario de Roblox con el plan comprado y recibes el acceso. Los tiempos de activación pueden variar según la disponibilidad del staff.</p><ul><li>Las transferencias de Robux se rigen por las normas de Roblox, incluidas sus comisiones. Uzivert Hub no controla ni garantiza esos procesos.</li><li>Como son productos digitales de entrega inmediata, las compras no son reembolsables, salvo error comprobable nuestro (por ejemplo un cobro duplicado o un plan mal activado), que se corrige con reposición o reembolso a criterio del staff.</li><li>Si el pago se revierte, se disputa o resulta fraudulento, la membresía se revoca.</li><li>Guarda tu comprobante: lo puedes necesitar para reclamar en soporte.</li></ul></article>
+      <article class="tsec"><span class="n">9</span><h3>Licencia y restricciones</h3><p>Al comprar una membresía recibes una licencia personal, limitada, no exclusiva e intransferible para usar las funciones en tu cuenta. No está permitido copiar, descompilar, desofuscar, redistribuir, revender, publicar ni usar el contenido de pago fuera de Uzivert Hub, ni usarlo para ofrecer servicios propios.</p></article>
+      <article class="tsec"><span class="n">10</span><h3>Vertix (asistente de IA)</h3><p>Vertix es el asistente de inteligencia artificial de Uzivert Hub, disponible en la página y en el Discord. Sus respuestas las genera una IA: pueden tener errores, no son garantía ni consejo profesional y debes comprobarlas antes de confiar en ellas. No compartas datos personales ni contraseñas con Vertix.</p></article>
+      <article class="tsec"><span class="n">11</span><h3>Foro y comunidad</h3><p>Sé respetuoso. No se permiten links, estafas, spam, insultos ni contenido ilegal u ofensivo. El staff puede borrar mensajes, cerrar temas y bloquear el acceso al foro o al Discord sin aviso.</p></article>
+      <article class="tsec"><span class="n">12</span><h3>Sanciones y revocación</h3><p>Podemos limitar, suspender o quitar el acceso a los scripts, a la verificación, al foro o a una membresía a quien abuse del servicio, intente robar o redistribuir el contenido, evada baneos, cometa fraude o incumpla estos términos. Una membresía revocada por incumplimiento no es reembolsable.</p></article>
+      <article class="tsec"><span class="n">13</span><h3>Propiedad intelectual</h3><p>Los scripts, el diseño, las marcas y el contenido de Uzivert Hub son de su creador. Roblox y los nombres de los juegos pertenecen a sus respectivos dueños. Todos los derechos reservados.</p></article>
+      <article class="tsec"><span class="n">14</span><h3>Limitación de responsabilidad</h3><p>En la máxima medida permitida, Uzivert Hub no responde por daños directos o indirectos derivados del uso del servicio, incluidos sanciones, pérdida de cuentas, datos o progreso, ni por interrupciones o cambios en las funciones. Tu única compensación por una compra defectuosa es la que se indica en la sección Compras y pagos.</p></article>
+      <article class="tsec"><span class="n">15</span><h3>Cambios en los términos</h3><p>Podemos actualizar estos términos en cualquier momento. La versión vigente es la publicada en esta página y seguir usando el servicio significa que la aceptas. Los cambios importantes se avisarán en el Discord.</p></article>
+      <article class="tsec"><span class="n">16</span><h3>Contacto</h3><p>Dudas, compras o reclamos: pestaña Soporte de esta página o el Discord de Uzivert Hub.</p></article>
+    </div>
+    <div class="tfin" id="t-fin"><p>¿Todo claro? Empieza con los scripts oficiales de Uzivert Hub.</p><button data-go="scripts">Obtener scripts</button></div>
+    <script>
+      (function(){
+        var els=document.querySelectorAll('#p-terminos .tsec,#p-terminos .tfin');
+        if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return;}
+        var io=new IntersectionObserver(function(en){en.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}})},{threshold:0.12,rootMargin:'0px 0px -30px 0px'});
+        els.forEach(function(e){io.observe(e)});
+      })();
+    </script>
   </section>
 
   <section class="page" id="p-scripts">
