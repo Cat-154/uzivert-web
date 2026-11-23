@@ -78,8 +78,9 @@ module.exports = function instalarMembresias(app, ctx) {
   const limite = (clave, max, ms) => { const n = Date.now(); const a = (lim.get(clave) || []).filter((t) => n - t < ms); if (a.length >= max) { lim.set(clave, a); return false; } a.push(n); lim.set(clave, a); if (lim.size > 5000) lim.clear(); return true; };
   const noStore = (res) => res.setHeader('Cache-Control', 'no-store');
   const lua = (res, src) => { noStore(res); res.type('text/plain; charset=utf-8').send(src); };
-  const planDe = (u) => (u && PLANES[u.plan] ? u.plan : '');
-  const publico = (u) => ({ robloxId: u.robloxId, robloxName: u.robloxName, plan: u.plan || '', planNombre: PLANES[u.plan] || '', discordId: u.discordId || '', discordName: u.discordName || '', vinculado: !!u.hwid, lastReset: u.lastReset || 0, linkedAt: u.linkedAt || 0, creado: u.creado || 0, nota: u.nota || '' });
+  const planesDe = (u) => { const o = []; if (u) { for (const p of [].concat(u.planes || [], u.plan || '')) { const q = String(p || '').toLowerCase(); if (PLANES[q] && !o.includes(q)) o.push(q); } } return o; };
+  const planDe = (u) => { const a = planesDe(u); return a.includes('exclusiva') ? 'exclusiva' : (a[0] || ''); };
+  const publico = (u) => ({ robloxId: u.robloxId, robloxName: u.robloxName, plan: planDe(u), planes: planesDe(u), planNombre: PLANES[planDe(u)] || '', discordId: u.discordId || '', discordName: u.discordName || '', vinculado: !!u.hwid, lastReset: u.lastReset || 0, linkedAt: u.linkedAt || 0, creado: u.creado || 0, nota: u.nota || '' });
   const porDiscord = (id) => DB.findBy('users', 'discordId', String(id));
   const guardar = (u) => DB.put('users', u.robloxId, u);
 
@@ -259,6 +260,27 @@ end
       lua(res, LUA_COMUN + `pcall(function()\n${bienvenidaLua(req, u)}end)\n` + codigo + '\n');
     } catch (e) { console.error('[membresias] e', e.message); res.status(500).type('text/plain').send('warn("Uzivert: error interno")'); }
   });
+  // 3b) Modulos de membresia (Premium / Exclusiva son pases separados y apilables). El hub gratis lo pide con userId + HWID.
+  // Solo entrega si el dispositivo YA esta vinculado (por el loader personal o Discord); nunca vincula por su cuenta.
+  app.get('/m2/modulo', async (req, res) => {
+    try {
+      const h = limpiar(req.query.h, 300), uid = limpiar(req.query.u, 12);
+      const vacio = () => lua(res, 'getgenv().UZ_PLANES = {}\n');
+      if (!limite('mod:' + req.ip, 30, 60e3)) return vacio();
+      if (h.length < 6 || !esId(uid)) return vacio();
+      if (!limite('modu:' + uid, 10, 60e3)) return vacio();
+      const u = await DB.get('users', uid);
+      const pl = planesDe(u);
+      if (!u || !pl.length || !u.hwid || u.hwid !== hh(h)) return vacio();
+      let out = 'getgenv().UZ_PLANES = { premium = ' + pl.includes('premium') + ', exclusiva = ' + pl.includes('exclusiva') + ' }\n-- uid ' + uid + '\n';
+      for (const p of ['premium', 'exclusiva']) {
+        if (!pl.includes(p)) continue;
+        const d = await DB.get('config', 'script_' + p);
+        if (d && d.codigo) out += '-- [modulo ' + p + ']\ngetgenv().UZ_MODS = getgenv().UZ_MODS or {}\ntable.insert(getgenv().UZ_MODS, function()\n' + d.codigo + '\nend)\n';
+      }
+      lua(res, out);
+    } catch (e) { console.error('[membresias] modulo', e.message); res.status(500).type('text/plain').send('getgenv().UZ_PLANES = {}'); }
+  });
   // 4) Bienvenida para cualquier cuenta verificada (los hubs la piden al arrancar; si no esta vinculada no devuelve nada)
   app.get('/m2/b', async (req, res) => {
     try {
@@ -321,7 +343,7 @@ end
       const u = await porDiscord(dcId((req.body || {}).discordId));
       if (!u) return res.json({ ok: false, error: 'Primero vincula tu cuenta.' });
       if (!planDe(u)) return res.json({ ok: false, error: 'Tu cuenta no tiene una membresia.' });
-      res.json({ ok: true, loader: loaderDe(req, u), plan: PLANES[u.plan] });
+      res.json({ ok: true, loader: loaderDe(req, u), plan: planesDe(u).map((p) => PLANES[p]).join(' + ') });
     } catch { res.status(500).json({ ok: false, error: 'Error interno' }); }
   });
   app.post('/m2/bot/reset', soloBot, async (req, res) => {
@@ -382,7 +404,7 @@ end
       }
       let u = await DB.get('users', rid);
       if (!u) u = { robloxId: rid, creado: Date.now(), token: nuevoToken() };
-      u.robloxName = rname; u.plan = plan; u.nota = limpiar(b.nota, 120) || u.nota || ''; if (!u.token) u.token = nuevoToken();
+      u.robloxName = rname; u.planes = planesDe(u).filter((p) => p !== plan).concat(plan); u.plan = planDe(u); u.nota = limpiar(b.nota, 120) || u.nota || ''; if (!u.token) u.token = nuevoToken();
       await guardar(u); audit(req, 'membresias: alta', `${rname} -> ${plan}`);
       res.json({ ok: true, usuario: publico(u) });
     } catch (e) { res.status(500).json({ error: e.message }); }
@@ -394,7 +416,8 @@ end
       if (a === 'reset') { u.hwid = ''; u.lastReset = 0; }
       else if (a === 'token') { u.token = nuevoToken(); }
       else if (a === 'desvincular') { u.discordId = ''; u.discordName = ''; u.avatarUrl = ''; u.hwid = ''; }
-      else if (a === 'plan') { const p = String((req.body || {}).plan || '').toLowerCase(); if (p !== '' && !PLANES[p]) return res.status(400).json({ error: 'Plan invalido.' }); u.plan = p; }
+      else if (a === 'plan') { const p = String((req.body || {}).plan || '').toLowerCase(); if (p !== '' && !PLANES[p]) return res.status(400).json({ error: 'Plan invalido.' }); u.planes = p ? [p] : []; u.plan = p; }
+      else if (a === 'planes') { const arr = [].concat((req.body || {}).planes || []).map((x) => String(x).toLowerCase()); if (arr.some((x) => !PLANES[x])) return res.status(400).json({ error: 'Plan invalido.' }); u.planes = arr; u.plan = planDe(u); }
       else return res.status(400).json({ error: 'Accion desconocida.' });
       await guardar(u); audit(req, 'membresias: ' + a, u.robloxName);
       res.json({ ok: true, usuario: publico(u) });
