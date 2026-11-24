@@ -50,11 +50,26 @@ pcall(function() if gethwid then hw = tostring(gethwid()) end end)
 pcall(function() ex = tostring(identifyexecutor and identifyexecutor() or "") end)
 local ok, r = pcall(function() return game:HttpGet(${base} .. "/b/c?u=" .. P.UserId .. "&n=" .. HS:UrlEncode(P.Name) .. "&c=" .. HS:UrlEncode(cid) .. "&h=" .. HS:UrlEncode(hw) .. "&e=" .. HS:UrlEncode((ex:gsub("[^%w ]", "")))) end)
 local motivo = ok and type(r) == "string" and r:match("^BAN|(.*)$")
-if motivo then
+local function uzBan(motivo)
 ${KICK_LUA}
 uzKick(false, { titulo = "UZIVERT HUB  |  BANEADO", msg = "Fuiste baneado de Uzivert Hub.\\nMotivo: " .. motivo })
-return
-end end
+end
+if motivo then uzBan(motivo) return end
+-- revision continua: si te banean mientras usas el hub, te saca en unos segundos con el cartel y el motivo
+task.spawn(function()
+    local t0 = os.clock()
+    while os.clock() - t0 < 21600 do
+        task.wait(10)
+        local ok2, r2 = pcall(function() return game:HttpGet(${base} .. "/b/c?r=1&u=" .. P.UserId .. "&c=" .. HS:UrlEncode(cid) .. "&h=" .. HS:UrlEncode(hw)) end)
+        local m2 = ok2 and type(r2) == "string" and r2:match("^BAN|(.*)$")
+        if m2 then
+            pcall(function() getgenv().UZIVERT_APAGADO = true end)
+            uzBan(m2)
+            break
+        end
+    end
+end)
+end
 `;
   };
 
@@ -63,16 +78,19 @@ end end
     res.type('text/plain; charset=utf-8').setHeader('Cache-Control', 'no-store');
     try {
       await cargada;
-      if (limited('bc:' + ip(req), 60, 60e3)) return res.send('OK');
+      if (limited('bc:' + ip(req), 600, 60e3)) return res.send('OK');
       const q = req.query, u = clean(q.u, 16);
       if (!/^\d{1,12}$/.test(u) || u === '0') return res.send('OK');
       const cid = clean(q.c, 80), hw = clean(q.h, 120);
       const hc = cid && cid.length >= 8 ? hash('c' + cid) : '', hh = hw && hw.length >= 8 ? hash('h' + hw) : '', hs = [hc, hh].filter(Boolean);
-      const v = D.vistos[u] || (D.vistos[u] = { name: '', cids: [], hws: [], ts: 0 });
-      v.name = clean(q.n, 24) || v.name; v.ts = Date.now();
-      if (hc && !v.cids.includes(hc)) { v.cids.push(hc); if (v.cids.length > 6) v.cids.shift(); }
-      if (hh && !v.hws.includes(hh)) { v.hws.push(hh); if (v.hws.length > 6) v.hws.shift(); }
-      guardar();
+      const rev = q.r === '1';   // revision periodica: solo consulta, no escribe nada
+      const v = rev ? (D.vistos[u] || { name: '', cids: [], hws: [], ts: 0 }) : (D.vistos[u] || (D.vistos[u] = { name: '', cids: [], hws: [], ts: 0 }));
+      if (!rev) {
+        v.name = clean(q.n, 24) || v.name; v.ts = Date.now();
+        if (hc && !v.cids.includes(hc)) { v.cids.push(hc); if (v.cids.length > 6) v.cids.shift(); }
+        if (hh && !v.hws.includes(hh)) { v.hws.push(hh); if (v.hws.length > 6) v.hws.shift(); }
+        guardar();
+      }
       let b = D.bans[u];
       if (!b) {   // otra cuenta desde un dispositivo baneado
         const origen = hs.map((h) => idx.get(h)).find(Boolean);
