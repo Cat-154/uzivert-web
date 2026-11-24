@@ -17,6 +17,25 @@ module.exports = function instalarBaneos(app, ctx) {
   // Mantiene tambien el baneo viejo de la API (el cargador del hub grande lo usa) con el mismo motivo; si la API no responde, no pasa nada
   const viejo = async (name, accion, motivo) => { if (!apiAdmin || !name) return; try { await apiAdmin('/admin/ban', { user: name, accion, motivo: motivo || '' }); } catch (e) { console.error('[baneos] API vieja:', e.message); } };
   const ROBLOX_USERS = (ctx.ROBLOX_USERS || 'https://users.roblox.com').replace(/\/$/, '');
+  // ---- firma de pings: la pagina entrega un token que la API de pingeo exige (misma PING_SECRET en las dos)
+  const PING_SECRET = process.env.PING_SECRET || '';
+  const nombres = new Map();   // uid -> { n, ts } nombre real de Roblox (cache 24 h)
+  async function nombreReal(uid, respaldo) {
+    const c = nombres.get(uid);
+    if (c && Date.now() - c.ts < 86400e3) return c.n;
+    try {
+      const r = await fetch(`${ROBLOX_USERS}/v1/users/${uid}`, { signal: AbortSignal.timeout(5000) });
+      if (r.ok) { const j = await r.json(); if (j && j.name) { nombres.set(uid, { n: j.name, ts: Date.now() }); if (nombres.size > 5000) nombres.delete(nombres.keys().next().value); return j.name; } }
+    } catch {}
+    return respaldo || '';
+  }
+  async function tokenPing(uid, respaldo) {
+    if (!PING_SECRET) return '';
+    const n = await nombreReal(uid, respaldo);
+    if (!/^[A-Za-z0-9_]{3,20}$/.test(n)) return '';
+    const w = Math.floor(Date.now() / (6 * 3600e3));
+    return crypto.createHmac('sha256', PING_SECRET).update(n.toLowerCase() + ':' + w).digest('hex').slice(0, 32);
+  }
   const hash = (x) => crypto.createHash('sha256').update('uzb:' + String(x)).digest('hex').slice(0, 24);
   let D = { bans: {}, vistos: {} };            // bans[uid] = { uid, name, motivo, ts, por, cids:[], hws:[], via? } | vistos[uid] = { name, cids:[], hws:[], ts }
   let idx = new Map();                          // hash de dispositivo -> uid del baneo
@@ -50,6 +69,8 @@ pcall(function() if gethwid then hw = tostring(gethwid()) end end)
 pcall(function() ex = tostring(identifyexecutor and identifyexecutor() or "") end)
 local ok, r = pcall(function() return game:HttpGet(${base} .. "/b/c?u=" .. P.UserId .. "&n=" .. HS:UrlEncode(P.Name) .. "&c=" .. HS:UrlEncode(cid) .. "&h=" .. HS:UrlEncode(hw) .. "&e=" .. HS:UrlEncode((ex:gsub("[^%w ]", "")))) end)
 local motivo = ok and type(r) == "string" and r:match("^BAN|(.*)$")
+local tk0 = ok and type(r) == "string" and r:match("^OK|(%w+)$")
+if tk0 then pcall(function() getgenv().UZ_PING_TK = tk0 end) end
 local function uzBan(motivo)
 ${KICK_LUA}
 uzKick(false, { titulo = "UZIVERT HUB  |  BANEADO", msg = "Fuiste baneado de Uzivert Hub.\\nMotivo: " .. motivo })
@@ -62,6 +83,8 @@ task.spawn(function()
         task.wait(10)
         local ok2, r2 = pcall(function() return game:HttpGet(${base} .. "/b/c?r=1&u=" .. P.UserId .. "&c=" .. HS:UrlEncode(cid) .. "&h=" .. HS:UrlEncode(hw)) end)
         local m2 = ok2 and type(r2) == "string" and r2:match("^BAN|(.*)$")
+        local tk2 = ok2 and type(r2) == "string" and r2:match("^OK|(%w+)$")
+        if tk2 then pcall(function() getgenv().UZ_PING_TK = tk2 end) end
         if m2 then
             pcall(function() getgenv().UZIVERT_APAGADO = true end)
             uzBan(m2)
@@ -101,7 +124,7 @@ end
           console.log('[baneos] cuenta alterna detectada:', u, 'via', origen);
         }
       }
-      if (!b) return res.send('OK');
+      if (!b) { const tk = await tokenPing(u, v.name || clean(q.n, 24)); return res.send(tk ? 'OK|' + tk : 'OK'); }
       let ch = false;   // si el baneado entro desde un dispositivo nuevo, tambien se registra
       if (hc && !b.cids.includes(hc)) { b.cids.push(hc); ch = true; }
       if (hh && !b.hws.includes(hh)) { b.hws.push(hh); ch = true; }
